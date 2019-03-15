@@ -1,0 +1,2 @@
+class Vehiculo:
+    pass
