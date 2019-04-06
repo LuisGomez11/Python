@@ -6,7 +6,6 @@ def numVeces(cadena,caracter):
     for x in cadena:
         if x == caracter:
             contador+=1
-
     if contador==0:
         print("No se encuentra caracter en la cadena")
     print("Las veces que se encuentra son:",contador) 
