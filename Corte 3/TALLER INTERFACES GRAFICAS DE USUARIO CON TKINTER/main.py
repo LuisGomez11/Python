@@ -1,12 +1,74 @@
 from tkinter import *
+from tkinter import messagebox
 
 lista = []
 
 def guardar():
-	print("GUARDAR")
+	n = nombre.get()
+	ap = apellidoP.get()
+	am = apellidoM.get()
+	c = correo.get()
+	t = telefono.get()
+	lista.append(n+"$"+ap+"$"+am+"$"+t+"$"+c)
+	escribirContacto()
+	messagebox.showinfo("Guardado","El contacto ha sido guardado en la agenda")
+	nombre.set("")
+	apellidoP.set("")
+	apellidoM.set("")
+	correo.set("")
+	telefono.set("")
+	consultar()
 
 def eliminar():
-	print("ELIMINAR")
+	eliminado = conteliminar.get()
+	removido = False
+	for elemento in lista:
+		arreglo = elemento.split("$")
+		if conteliminar.get() == arreglo[3]:
+			lista.remove(elemento)
+			removido = True
+	escribirContacto()
+	consultar()
+	if removido:
+		messagebox.showinfo("Eliminar","Elemento eliminado "+eliminado)
+
+def consultar():
+	r = Text(ventana, width=80, height=15)
+	lista.sort()
+	valores = []
+	r.insert(INSERT, "Nombre\tApellido Pa\t\tApellido Ma\t\tTeléfono\t\tCorreo\n")
+	for elemento in lista:
+		arreglo = elemento.split("$")
+		valores.append(arreglo[3])
+		r.insert(INSERT, arreglo[0]+"\t"+arreglo[1]+"\t\t"+arreglo[2]+"\t\t"+arreglo[3]+"\t\t"+arreglo[4]+"\t\n")
+	r.place(x=20,y=350)
+	spinTelefono = Spinbox(ventana, textvariable=conteliminar).place(x=450,y=60)
+	if lista == []:
+		spinTelefono = Spinbox(ventana, textvariable=conteliminar).place(x=450,y=60)
+	r.config(state=DISABLED)
+
+def iniciarArchivo():
+ 	archivo = open("ag.txt","a")
+ 	archivo.close()
+
+def cargar():
+	archivo = open("ag.txt","r")
+	linea = archivo.readline()
+	if linea:
+		while linea:
+			if linea[-1]=='\n':
+				linea = linea[:-1]
+			lista.append(linea)
+			linea = archivo.readline()
+	archivo.close()
+
+def escribirContacto():
+	archivo = open("ag.txt","w")
+	lista.sort()
+	for elemento in lista:
+		archivo.write(elemento+"\n")
+	archivo.close()
+
 
 ventana = Tk()
 
@@ -21,6 +83,10 @@ conteliminar = StringVar()
 # Colores
 colorFondo = "#066"
 colorLetra = "#FFF"
+
+iniciarArchivo()
+cargar()
+consultar()
 
 # Opciones de la ventana
 ventana.title("Agenda de archivos")
